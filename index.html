@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shiny App on US International Students Trend</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Shiny App on US International Students Trend">
+  <meta name="author" content="Eugenia">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Shiny App on US International Students Trend</h1>
+    <h2></h2>
+    <p>Eugenia<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Motivation and Overview</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>In 2013/14, international students contributed over <strong>$27 billion</strong> to the US economy and the growth is only getting stronger. </p>
+
+<p>The understanding of where these students come from and how it has evolved over time will give us insights to where to attract international students in the future.</p>
+
+<p>The Shiny app (available <a href="https://eugeniax.shinyapps.io/USintlStu">here</a> ) is built to</p>
+
+<ul>
+<li><p>visualize the geographical distributions of the international students studying in US</p></li>
+<li><p>track the change over the period of 2001-2014 of the top places of origin </p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Obtaining and Cleaning Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The data was obtained from the Open Door project website <a href="http://iie.org/Research-and-Publications/Open-Doors/Data">http://iie.org/Research-and-Publications/Open-Doors/Data</a> </p>
+
+<p>In specific, information on top 25 places of origin from 2001 to 2014 was extracted. </p>
+
+<p>Data tables were scrubbed from the website manually due to the inconsistency of the data presentation and format over different time period, though we wishes to code the process for better reproducibility. The raw datasets (in <code>csv</code> files) are archived on <a href="https://github.com/eugeniax/USintlStu">GitHub</a> for each retrieval.</p>
+
+<p>Country names were first standardized using regex.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Mapping out the Top Places of Origin</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Google geochart is chosen, for its visual appeal and ease of use, to visualize the geographical locations of the top places of origin. We used <code>gvisGeoChart</code> from <code>googleVis</code> package for the map.</p>
+
+<pre><code class="r">gvisGeoChart(myData,locationvar=&quot;Country&quot;, colorvar=&quot;Students&quot;,
+    options=list(region=&quot;world&quot;, displayMode=&quot;regions&quot;, 
+            resolution=&quot;countries&quot;, width=800, height=600,
+            colorAxis=&quot;{colors:[&#39;#feb24c&#39;, &#39;#fc4e2a&#39;, &#39;#b10026&#39;]}&quot;
+))
+</code></pre>
+
+<p>Users can move the slider to pick a year and a choropleth map will be rendered to show the distribution of international students based on their places of origin. </p>
+
+<p>The slider is animated. With the play button, the viewer can see the change over time.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Plotting the Trend of Top Places of Origin over Time</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>To show how number of students from each country has changed over time, line chart is plotted using <code>gvisLineChart</code> from the same <code>googleVis</code> package.</p>
+
+<pre><code class="r">gvisLineChart(mylines, options=list(width=800, height=800))
+</code></pre>
+
+<p>Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using <code>melt</code> and <code>dcast</code> functions from <code>reshape2</code> package.</p>
+
+<pre><code class="r">linedata &lt;- melt(linedata, id.var=c(&quot;Year&quot;, &quot;Country&quot;))
+linedata &lt;- dcast(linedata, Year ~ Country, value.var=&quot;value&quot;)
+</code></pre>
+
+<p>Users can tick the checkboxes to select the countries and the corresponding time line will be plotted on the line chart. </p>
+
+<p>The list of countries is dynamicly generated and corresponds to <code>names(linedata)</code> so any future change in the dataset will be automatically updated. </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Motivation and Overview'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Obtaining and Cleaning Data'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Mapping out the Top Places of Origin'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Plotting the Trend of Top Places of Origin over Time'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
