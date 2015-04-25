@@ -27,13 +27,18 @@ The Shiny app (available [here](https://eugeniax.shinyapps.io/USintlStu) ) is bu
 
 ## Obtaining and Cleaning Data 
 
-The data was obtained from the Open Door project website <http://iie.org/Research-and-Publications/Open-Doors/Data> 
-
-In specific, information on top 25 places of origin from 2001 to 2014 was extracted. 
+In specific, information on top 25 places of origin from 2001 to 2014 was extracted from the [Open Door project] (http://iie.org/Research-and-Publications/Open-Doors/Data)
 
 Data tables were scrubbed from the website manually due to the inconsistency of the data presentation and format over different time period, though we wishes to code the process for better reproducibility. The raw datasets (in `csv` files) are archived on [GitHub] (https://github.com/eugeniax/USintlStu) for each retrieval.
 
 Country names were first standardized using regex.
+
+Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using `melt` and `dcast` functions from `reshape2` package.
+
+```{r echo=TRUE,eval=FALSE}
+linedata <- melt(linedata, id.var=c("Year", "Country"))
+linedata <- dcast(linedata, Year ~ Country, value.var="value")
+```
 
 ---
 
@@ -61,13 +66,6 @@ To show how number of students from each country has changed over time, line cha
 
 ```{r echo=TRUE, eval=FALSE}
 gvisLineChart(mylines, options=list(width=800, height=800))
-```
-
-Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using `melt` and `dcast` functions from `reshape2` package.
-
-```{r echo=TRUE,eval=FALSE}
-linedata <- melt(linedata, id.var=c("Year", "Country"))
-linedata <- dcast(linedata, Year ~ Country, value.var="value")
 ```
 
 Users can tick the checkboxes to select the countries and the corresponding time line will be plotted on the line chart. 

@@ -66,13 +66,17 @@
     <h2>Obtaining and Cleaning Data</h2>
   </hgroup>
   <article data-timings="">
-    <p>The data was obtained from the Open Door project website <a href="http://iie.org/Research-and-Publications/Open-Doors/Data">http://iie.org/Research-and-Publications/Open-Doors/Data</a> </p>
-
-<p>In specific, information on top 25 places of origin from 2001 to 2014 was extracted. </p>
+    <p>In specific, information on top 25 places of origin from 2001 to 2014 was extracted from the <a href="http://iie.org/Research-and-Publications/Open-Doors/Data">Open Door project</a></p>
 
 <p>Data tables were scrubbed from the website manually due to the inconsistency of the data presentation and format over different time period, though we wishes to code the process for better reproducibility. The raw datasets (in <code>csv</code> files) are archived on <a href="https://github.com/eugeniax/USintlStu">GitHub</a> for each retrieval.</p>
 
 <p>Country names were first standardized using regex.</p>
+
+<p>Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using <code>melt</code> and <code>dcast</code> functions from <code>reshape2</code> package.</p>
+
+<pre><code class="r">linedata &lt;- melt(linedata, id.var=c(&quot;Year&quot;, &quot;Country&quot;))
+linedata &lt;- dcast(linedata, Year ~ Country, value.var=&quot;value&quot;)
+</code></pre>
 
   </article>
   <!-- Presenter Notes -->
@@ -108,12 +112,6 @@
     <p>To show how number of students from each country has changed over time, line chart is plotted using <code>gvisLineChart</code> from the same <code>googleVis</code> package.</p>
 
 <pre><code class="r">gvisLineChart(mylines, options=list(width=800, height=800))
-</code></pre>
-
-<p>Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using <code>melt</code> and <code>dcast</code> functions from <code>reshape2</code> package.</p>
-
-<pre><code class="r">linedata &lt;- melt(linedata, id.var=c(&quot;Year&quot;, &quot;Country&quot;))
-linedata &lt;- dcast(linedata, Year ~ Country, value.var=&quot;value&quot;)
 </code></pre>
 
 <p>Users can tick the checkboxes to select the countries and the corresponding time line will be plotted on the line chart. </p>
