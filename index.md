@@ -31,15 +31,18 @@ In specific, information on top 25 places of origin from 2001 to 2014 was extrac
 
 Data tables were scrubbed from the website manually due to the inconsistency of the data presentation and format over different time period, though we wishes to code the process for better reproducibility. The raw datasets (in `csv` files) are archived on [GitHub] (https://github.com/eugeniax/USintlStu) for each retrieval.
 
-Country names were first standardized using regex.
-
-Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using `melt` and `dcast` functions from `reshape2` package.
-
+Country names were first standardized using regex, for example
 
 ```r
-linedata <- melt(linedata, id.var=c("Year", "Country"))
-linedata <- dcast(linedata, Year ~ Country, value.var="value")
+cNames <- c("South Korea", "Korea, Rep. of (South)", "Korea, Republic of")
+gsub("^Korea.*", "South Korea", cNames)
 ```
+
+```
+## [1] "South Korea" "South Korea" "South Korea"
+```
+
+Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using `melt` and `dcast` functions from `reshape2` package.
 
 ---
 

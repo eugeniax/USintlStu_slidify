@@ -70,13 +70,16 @@
 
 <p>Data tables were scrubbed from the website manually due to the inconsistency of the data presentation and format over different time period, though we wishes to code the process for better reproducibility. The raw datasets (in <code>csv</code> files) are archived on <a href="https://github.com/eugeniax/USintlStu">GitHub</a> for each retrieval.</p>
 
-<p>Country names were first standardized using regex.</p>
+<p>Country names were first standardized using regex, for example</p>
+
+<pre><code class="r">cNames &lt;- c(&quot;South Korea&quot;, &quot;Korea, Rep. of (South)&quot;, &quot;Korea, Republic of&quot;)
+gsub(&quot;^Korea.*&quot;, &quot;South Korea&quot;, cNames)
+</code></pre>
+
+<pre><code>## [1] &quot;South Korea&quot; &quot;South Korea&quot; &quot;South Korea&quot;
+</code></pre>
 
 <p>Google line chart expects data in the wide format (in contrast to tidy data as defined by Hadley Wickham). The dataset was transformed using <code>melt</code> and <code>dcast</code> functions from <code>reshape2</code> package.</p>
-
-<pre><code class="r">linedata &lt;- melt(linedata, id.var=c(&quot;Year&quot;, &quot;Country&quot;))
-linedata &lt;- dcast(linedata, Year ~ Country, value.var=&quot;value&quot;)
-</code></pre>
 
   </article>
   <!-- Presenter Notes -->
